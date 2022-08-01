@@ -8,19 +8,32 @@ const rootPath =
 		? vscode.workspace.workspaceFolders[0].uri.fsPath
 		: "";
 
-const tasksJsonPath = path.join(rootPath, '.\\.vscode\\tasks.json');
+const tasksJsonPath = path.join(rootPath, '.\\.vscode\\scripts.json');
 
 export function activate(context: vscode.ExtensionContext) {
 	registerCommands(context, tasksJsonPath);
 
-	const onDidSaveTextDocument = vscode.workspace.onDidSaveTextDocument((savedTextDocument: vscode.TextDocument) => {
-		if (savedTextDocument.uri.fsPath === tasksJsonPath) {
-			registerCommands(context, tasksJsonPath);
-		}
+	// subscribe to document changes to detect when project has required file .vscode\scripts.json
+	const onDidRenameFiles = vscode.workspace.onDidRenameFiles((e) => {
+		e.files.forEach(element => updateCommandsIfPathIsCorrect(element.newUri.fsPath, context));
+	});
+
+	const onDidDeleteFiles = vscode.workspace.onDidDeleteFiles((e) => {
+		e.files.forEach(element => updateCommandsIfPathIsCorrect(element.fsPath, context));
+	});
+
+	const onDidSaveTextDocument = vscode.workspace.onDidSaveTextDocument((savedTextDocument: vscode.TextDocument) =>
+		updateCommandsIfPathIsCorrect(savedTextDocument.uri.fsPath, context));
+
+	context.subscriptions.push(onDidSaveTextDocument, onDidRenameFiles, onDidDeleteFiles);
+}
+
+function updateCommandsIfPathIsCorrect(path: string, context: vscode.ExtensionContext) {
+	if (path === tasksJsonPath) {
+		registerCommands(context, tasksJsonPath);
 		// update tasks view
 		vscode.commands.executeCommand('script-explorer-view.refresh');
-	});
-	context.subscriptions.push(onDidSaveTextDocument);
+	}
 }
 
 const scriptsViewProvider = new ScriptsViewProvider(rootPath);

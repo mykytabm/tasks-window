@@ -18,15 +18,15 @@ export class ScriptsViewProvider implements vscode.TreeDataProvider<ScriptItem> 
 
   getChildren(element?: ScriptItem): Thenable<ScriptItem[]> {
     if (!this.workspaceRoot) {
-      vscode.window.showInformationMessage("Can't find tasks.json in .vscode folder");
+      vscode.window.showInformationMessage("Can't find scripts.json in .vscode folder");
       return Promise.resolve([]);
     }
 
-    const scriptsJsonPath = path.join(this.workspaceRoot, '\\.vscode\\tasks.json');
+    const scriptsJsonPath = path.join(this.workspaceRoot, '\\.vscode\\scripts.json');
     if (this.pathExists(scriptsJsonPath)) {
       return Promise.resolve(this.getTasksInJson(scriptsJsonPath));
     } else {
-      vscode.window.showInformationMessage("Can't find tasks.json in .vscode folder");
+      vscode.window.showInformationMessage("Can't find scripts.json in .vscode folder");
       return Promise.resolve([]);
     }
   }

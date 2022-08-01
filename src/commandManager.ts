@@ -13,21 +13,22 @@ export function registerCommands(context: vscode.ExtensionContext, scriptsJsonPa
         registeredCommands = {};
 
         const scriptsJson = JSON.parse(fs.readFileSync(scriptsJsonPath, 'utf-8'));
+        if (scriptsJson) {
+            // register commands
+            for (let index = 0; index < scriptsJson.scripts.length; index++) {
+                const script = scriptsJson.scripts[index];
+                const commandName = `se-script.${script.name}`;
 
-        // register commands
-        for (let index = 0; index < scriptsJson.scripts.length; index++) {
-            const script = scriptsJson.scripts[index];
-            const commandName = `se-script.${script.name}`;
+                if (registeredCommands[commandName]) {
+                    vscode.window.showErrorMessage(commandName + ' is already registered. Make sure to assign a unique name to each of your scripts.');
+                    continue;
+                }
 
-            if (registeredCommands[commandName]) {
-                vscode.window.showErrorMessage(commandName + ' is already registered. Make sure to assign a unique name to each of your scripts.');
-                continue;
+                registeredCommands[commandName] = vscode.commands.registerCommand(commandName, () => {
+                    vscode.window.activeTerminal?.sendText(script.script);
+                });
+                context.subscriptions.push(registeredCommands[commandName]);
             }
-
-            registeredCommands[commandName] = vscode.commands.registerCommand(commandName, () => {
-                vscode.window.activeTerminal?.sendText(script.script);
-            });
-            context.subscriptions.push(registeredCommands[commandName]);
         }
     }
 }
