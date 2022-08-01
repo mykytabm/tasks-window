@@ -1,26 +1,30 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
+import { ScriptsViewProvider } from './scriptsViewProvider';
+import { registerCommands } from './commandManager';
+import path = require('path');
 
-// this method is called when your extension is activated
-// your extension is activated the very first time the command is executed
+const rootPath =
+	vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0
+		? vscode.workspace.workspaceFolders[0].uri.fsPath
+		: "";
+
+const tasksJsonPath = path.join(rootPath, '.\\.vscode\\tasks.json');
+
 export function activate(context: vscode.ExtensionContext) {
-	
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "tasks-window" is now active!');
+	registerCommands(context, tasksJsonPath);
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('tasks-window.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from tasks-window!');
+	const onDidSaveTextDocument = vscode.workspace.onDidSaveTextDocument((savedTextDocument: vscode.TextDocument) => {
+		if (savedTextDocument.uri.fsPath === tasksJsonPath) {
+			registerCommands(context, tasksJsonPath);
+		}
+		// update tasks view
+		vscode.commands.executeCommand('script-explorer-view.refresh');
 	});
-
-	context.subscriptions.push(disposable);
+	context.subscriptions.push(onDidSaveTextDocument);
 }
 
-// this method is called when your extension is deactivated
-export function deactivate() {}
+const scriptsViewProvider = new ScriptsViewProvider(rootPath);
+vscode.window.registerTreeDataProvider('script-explorer', scriptsViewProvider);
+vscode.commands.registerCommand('script-explorer-view.refresh', () =>
+	scriptsViewProvider.refresh()
+);

@@ -1,7 +1,7 @@
 {
-  "name": "tasks-window",
-	"displayName": "tasks-window",
-	"description": "Window with tasks",
+	"name": "script-explorer",
+	"displayName": "Scripts Explorer",
+	"description": "Easily run your scripts using interface with buttons",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.69.0"
@@ -10,16 +10,39 @@
 		"Other"
 	],
 	"activationEvents": [
-        "onCommand:tasks-window.helloWorld"
+		"onView:script-explorer"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "tasks-window.helloWorld",
-				"title": "Hello World"
+				"command": "script-explorer-view.refresh",
+				"title": "Refresh script explorer"
 			}
-		]
+		],
+		"views": {
+			"script-explorer": [
+				{
+					"id": "script-explorer",
+					"name": "Scripts Explorer"
+				}
+			]
+		},
+		"explorer": [
+			{
+				"id": "se-script",
+				"name": "Scripts"
+			}
+		],
+		"viewsContainers": {
+			"activitybar": [
+				{
+					"id": "script-explorer",
+					"title": "Script Explorer",
+					"icon": "resources/activity-bar-logo-2.svg"
+				}
+			]
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "npm run compile",
@@ -41,5 +64,8 @@
 		"mocha": "^10.0.0",
 		"typescript": "^4.7.4",
 		"@vscode/test-electron": "^2.1.5"
+	},
+	"tasks-view": {
+		"path": "C:\\cave\\projects\\tasks-window\\.vscode\\tasks.json"
 	}
 }
