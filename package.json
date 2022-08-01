@@ -3,6 +3,7 @@
 	"displayName": "Scripts Explorer",
 	"description": "Easily run your scripts using interface with buttons",
 	"version": "0.0.1",
+	"publisher": "mykytabalabuiev",
 	"engines": {
 		"vscode": "^1.69.0"
 	},
