@@ -22,7 +22,7 @@ export class ScriptsViewProvider implements vscode.TreeDataProvider<ScriptItem> 
       return Promise.resolve([]);
     }
 
-    const scriptsJsonPath = path.join(this.workspaceRoot, '\\.vscode\\scripts.json');
+    const scriptsJsonPath = path.join(this.workspaceRoot, '/.vscode/scripts.json');
     if (this.pathExists(scriptsJsonPath)) {
       return Promise.resolve(this.getTasksInJson(scriptsJsonPath));
     } else {

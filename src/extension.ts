@@ -8,7 +8,7 @@ const rootPath =
 		? vscode.workspace.workspaceFolders[0].uri.fsPath
 		: "";
 
-const tasksJsonPath = path.join(rootPath, '.\\.vscode\\scripts.json');
+const tasksJsonPath = path.join(rootPath, '/.vscode/scripts.json');
 
 export function activate(context: vscode.ExtensionContext) {
 	registerCommands(context, tasksJsonPath);
