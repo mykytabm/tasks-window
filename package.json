@@ -2,8 +2,9 @@
 	"name": "script-explorer",
 	"displayName": "Scripts Explorer",
 	"description": "Easily run your scripts using interface with buttons",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"publisher": "mykytabalabuiev",
+	"repository": "https://github.com/nikitabm/tasks-window",
 	"engines": {
 		"vscode": "^1.69.0"
 	},
